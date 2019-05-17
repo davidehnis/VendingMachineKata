@@ -2,7 +2,7 @@
 {
     public interface ICoin
     {
-        Coin Type { get; }
+        CoinType Type { get; }
 
         decimal Value { get; }
     }
