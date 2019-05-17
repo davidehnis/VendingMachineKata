@@ -5,5 +5,7 @@
         CoinType Type { get; }
 
         decimal Value { get; }
+
+        IMetal Metal();
     }
 }

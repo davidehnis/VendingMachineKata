@@ -5,7 +5,7 @@
     /// </summary>
     public interface IResult
     {
-        IStatus Status { get; }
+        IStatus Current { get; }
 
         bool Success();
     }

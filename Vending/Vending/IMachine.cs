@@ -29,9 +29,11 @@ namespace Vending
         Task Return(IContext context, Action<IResult, IContext> callback);
 
         /// <summary>Make a product selection</summary>
+        /// c
+        /// <param name="context"> </param>
         /// <param name="bin">     </param>
         /// <param name="callback"></param>
         /// <returns></returns>
-        Task Select(string bin, Action<IResult, ISelection> callback);
+        Task Select(IContext context, string bin, Action<IResult, IContext> callback);
     }
 }

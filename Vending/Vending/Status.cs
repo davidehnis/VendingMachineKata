@@ -1,16 +1,25 @@
 ﻿namespace Vending
 {
-    /// <summary>The available status types</summary>
-    public enum Status
+    public class Status : IStatus
     {
-        ExactChangeOnly,
-        InsertCoin,
-        SoldOut,
-        ThankYou,
-        Price,
-        InvalidCoin,
-        InvalidSelection,
-        InvalidBin,
-        EmptyBin
+        public Status(StatusType type, string message = "")
+        {
+            Type = type;
+            Message = message;
+        }
+
+        public static IStatus InvalidCoin { get; } = new Status(StatusType.InvalidCoin);
+
+        public static IStatus New { get; } = new Status(StatusType.New);
+
+        public static IStatus SoldOut { get; } = new Status(StatusType.SoldOut);
+
+        public static IStatus Success { get; } = new Status(StatusType.Success);
+
+        public static IStatus ThankYou { get; } = new Status(StatusType.ThankYou);
+
+        public string Message { get; }
+
+        public StatusType Type { get; }
     }
 }

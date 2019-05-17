@@ -20,5 +20,11 @@
         public CoinType Type { get; }
 
         public decimal Value { get; }
+
+        public IMetal Metal()
+        {
+            if (this == Quarter) return Metal.Quarter;
+            return new Metal();
+        }
     }
 }

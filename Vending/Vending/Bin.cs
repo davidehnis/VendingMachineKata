@@ -9,14 +9,15 @@ namespace Vending
             Id = id;
         }
 
-        protected List<IProduct> Products { get; } = new List<IProduct>();
+        public string Id { get; }
+
+        public IInventory<IProduct> Inventory => Products;
+
+        protected Inventory<IProduct> Products { get; } = new Inventory<IProduct>();
 
         public void Add(IProduct product)
         {
-            Products.Add(product);
+            Products.Deposit(product);
         }
-
-        public string Id { get; }
-        public IEnumerable<IProduct> Inventory => Products;
     }
 }

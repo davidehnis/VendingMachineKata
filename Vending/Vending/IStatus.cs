@@ -5,6 +5,6 @@
     {
         string Message { get; }
 
-        Status Status { get; }
+        StatusType Type { get; }
     }
 }
