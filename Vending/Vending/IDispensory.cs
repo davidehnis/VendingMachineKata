@@ -2,10 +2,10 @@
 
 namespace Vending
 {
-    public interface IDispensory
+    public interface IDispensory<T>
     {
-        IEnumerable<IProduct> Inventory { get; }
+        IEnumerable<T> Inventory { get; }
 
-        void Deposit(IProduct product);
+        void Deposit(T product);
     }
 }

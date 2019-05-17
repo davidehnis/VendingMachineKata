@@ -49,10 +49,20 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DefaultContext.cs" />
+    <Compile Include="NotEnoughCoinInventoryContext.cs" />
+    <Compile Include="NotEnoughProductInventoryContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="General.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Vending\Vending.csproj">
+      <Project>{837b66b0-3a81-4e28-9b71-fa7b970cdf4b}</Project>
+      <Name>Vending</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

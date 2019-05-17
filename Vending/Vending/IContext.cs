@@ -5,11 +5,13 @@ namespace Vending
     /// <summary>Manages the current state of the experience</summary>
     public interface IContext
     {
-        IEnumerable<Coin> AcceptedDenominations { get; }
+        IEnumerable<CoinType> AcceptedDenominations { get; }
 
         IEnumerable<IBin> AvailableBins { get; }
 
         IEnumerable<ICoin> CoinInventory { get; }
+
+        IDispensory<ICoin> CoinReturn { get; }
 
         ISelection CurrentSelection { get; }
 
@@ -17,13 +19,19 @@ namespace Vending
 
         IDisplay Display { get; }
 
+        IEnumerable<IProduct> ProductInventory { get; }
+
+        IDispensory<IProduct> ProductReturn { get; }
+
+        decimal TotalDeposit { get; }
+
         IEnumerable<IStatus> Trace { get; }
 
         /// <summary>
         /// Updates the accepted denominations list
         /// </summary>
         /// <param name="type"></param>
-        void Add(Coin type);
+        void Add(CoinType type);
 
         /// <summary>
         /// Updates the valid and available bins
