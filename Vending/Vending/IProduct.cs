@@ -1,9 +1,7 @@
 ﻿namespace Vending
 {
-    public interface IProduct
+    public interface IProduct : IAsset
     {
-        decimal Cost { get; }
-
         ProductType Type { get; }
     }
 }

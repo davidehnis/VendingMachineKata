@@ -2,11 +2,20 @@
 {
     public class Tags
     {
-        public static string Thank_You { get; } = "THANK YOU";
-        public static string Sold_Out { get; } = "SOLD OUT";
+        private Tags()
+        {
+        }
 
-        public static string Insert_Coin { get; } = "INSERT COIN";
+        public static string ExactChange { get; } = "EXACT CHANGE ONLY";
+
+        public static string InsertCoin { get; } = "INSERT COIN";
+
+        public static string InvalidSelection { get; } = "INVALID SELECTION";
 
         public static string Price { get; } = "PRICE";
+
+        public static string SoldOut { get; } = "SOLD OUT";
+
+        public static string ThankYou { get; } = "THANK YOU";
     }
 }

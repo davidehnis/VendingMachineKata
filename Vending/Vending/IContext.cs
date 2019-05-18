@@ -13,11 +13,11 @@ namespace Vending
 
         IInventory<IMetal> CoinReturn { get; }
 
-        ISelection CurrentSelection { get; }
-
         IInventory<ICoin> DepositedCoins { get; }
 
-        IDisplay Display { get; }
+        IDisplay DisplayAmount { get; }
+
+        IDisplay DisplayMessage { get; }
 
         IInventory<IProduct> ProductReturn { get; }
 
@@ -57,13 +57,17 @@ namespace Vending
 
         void InvalidCoin(IMetal metal);
 
+        void MadePurchaseState(IProduct product);
+
+        void MakeChange(decimal productCost);
+
+        void NotEnoughCoinsState(IProduct product);
+
         void Purchase(IProduct product);
 
         IProduct SelectProduct(string bin);
 
-        /// <summary>Changes the current selection</summary>
-        /// <param name="selection"></param>
-        void Update(ISelection selection);
+        void StartState();
 
         void ValidCoin(ICoin coin);
     }

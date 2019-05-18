@@ -46,6 +46,7 @@
     <Compile Include="CoinType.cs" />
     <Compile Include="Context.cs" />
     <Compile Include="Factory.cs" />
+    <Compile Include="IAsset.cs" />
     <Compile Include="IBin.cs" />
     <Compile Include="ICoin.cs" />
     <Compile Include="IContext.cs" />

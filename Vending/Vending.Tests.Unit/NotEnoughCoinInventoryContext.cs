@@ -4,7 +4,7 @@
     {
         internal NotEnoughCoinInventoryContext()
         {
-            CoinInventoryList.Clear();
+            CoinInventory.Clear();
         }
     }
 }

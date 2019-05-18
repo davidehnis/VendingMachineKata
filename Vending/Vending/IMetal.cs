@@ -5,7 +5,7 @@ namespace Vending
     /// <summary>
     /// The measurements of an inserted piece of metal
     /// </summary>
-    public interface IMetal : IEquatable<IMetal>
+    public interface IMetal : IAsset, IEquatable<IMetal>
     {
         decimal Radius { get; }
 

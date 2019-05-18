@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
 
 namespace Vending
 {
@@ -9,11 +9,14 @@ namespace Vending
             Id = id;
         }
 
+        public decimal Cost => Products.Items.Sum(p => p.Cost);
+
         public string Id { get; }
 
         public IInventory<IProduct> Inventory => Products;
 
-        protected Inventory<IProduct> Products { get; } = new Inventory<IProduct>();
+        protected IInventory<IProduct> Products { get; }
+            = new AssetInventory<IProduct>();
 
         public void Add(IProduct product)
         {

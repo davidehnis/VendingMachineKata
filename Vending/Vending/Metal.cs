@@ -15,6 +15,8 @@
 
         public static IMetal Quarter { get; } = new Metal(12, 3, 60);
 
+        public decimal Cost => CalcCost();
+
         public decimal Radius { get; }
 
         public decimal Thickness { get; }
@@ -58,6 +60,11 @@
         protected bool Equals(Metal other)
         {
             return Radius == other.Radius && Thickness == other.Thickness && Weight == other.Weight;
+        }
+
+        private decimal CalcCost()
+        {
+            return Create()?.Cost ?? 0;
         }
     }
 }

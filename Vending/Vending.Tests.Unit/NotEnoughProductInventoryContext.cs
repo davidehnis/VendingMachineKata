@@ -4,7 +4,7 @@
     {
         internal NotEnoughProductInventoryContext()
         {
-            AvailableBinList.Clear();
+            AvailableBins.Clear();
         }
     }
 }

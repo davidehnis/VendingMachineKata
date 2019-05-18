@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -7,15 +6,15 @@ namespace Vending
 {
     public class Machine : IMachine
     {
-        public Task Boot(IContext initial, Action<IResult, IContext> callback)
+        public Task Boot(IContext initial, Action<IResult> callback)
         {
             return Task.Factory.StartNew(() =>
             {
-                callback?.Invoke(new Result(), initial);
+                callback?.Invoke(new Result());
             });
         }
 
-        public Task Insert(IMetal metal, IContext context, Action<IResult, IContext> callback)
+        public Task Insert(IMetal metal, IContext context, Action<IResult> callback)
         {
             return Task.Factory.StartNew(() =>
             {
@@ -25,18 +24,18 @@ namespace Vending
                 {
                     context.InvalidCoin(metal);
                     result.Push(new Result(Status.InvalidCoin, false));
-                    callback?.Invoke(result, context);
+                    callback?.Invoke(result);
                 }
                 else
                 {
                     context.ValidCoin(coin);
                     result.Push(new Result(Status.Success, true));
-                    callback?.Invoke(result, context);
+                    callback?.Invoke(result);
                 }
             });
         }
 
-        public Task Return(IContext context, Action<IResult, IContext> callback)
+        public Task Return(IContext context, Action<IResult> callback)
         {
             return Task.Factory.StartNew(() =>
             {
@@ -45,45 +44,38 @@ namespace Vending
                     context.CoinReturn.Deposit(coin.ToMetal());
                 }
 
-                return new Result(Status.Success, true);
+                context.StartState();
+                callback?.Invoke(new Result(Status.Success, true));
             });
         }
 
-        public Task Select(IContext context, string bin, Action<IResult, IContext> callback)
+        public Task Select(IContext context, string bin, Action<IResult> callback)
         {
             return Task.Factory.StartNew(() =>
             {
                 var product = context.SelectProduct(bin);
+                var isValidBin = context.AvailableBins.Items.FirstOrDefault(b => b.Id == bin) != null;
                 if (product == null)
                 {
-                    context.Display.Push(Tags.Sold_Out);
-                    context.Display.Push(Tags.Insert_Coin);
-                    var res = new Result(Status.SoldOut, false);
-                    callback?.Invoke(res, context);
+                    context.DisplayMessage.Push(Tags.SoldOut);
+                    context.StartState();
+                    var res = new Result(Status.SoldOut, true);
+                    callback?.Invoke(res);
 
                     return;
                 }
 
-                var depositedCoinTotal = context.DepositedCoins.Items.Select(c => c.Value).Sum();
-                if (depositedCoinTotal >= product.Cost)
+                if (!isValidBin)
                 {
-                    context.ProductReturn.Deposit(product);
-                    context.Display.Push(Tags.Thank_You);
-                    context.Display.Push(Tags.Insert_Coin);
-                    context.Display.Push("$0.00");
+                    context.DisplayMessage.Push(Tags.InvalidSelection);
+                    context.StartState();
+                    var res = new Result(Status.SoldOut, true);
+                    callback?.Invoke(res);
 
-                    var result = new Result(Status.Price, false);
-                    callback?.Invoke(result, context);
+                    return;
                 }
-                else
-                {
-                    context.Display.Push(Tags.Price);
-                    var formatted = $"{product.Cost:C}";
-                    context.Display.Push(formatted);
 
-                    var result = new Result(Status.ThankYou, true);
-                    callback?.Invoke(result, context);
-                }
+                context.Purchase(product);
             });
         }
     }

@@ -2,7 +2,7 @@
 
 namespace Vending
 {
-    public interface IBin
+    public interface IBin : IAsset
     {
         string Id { get; }
 
