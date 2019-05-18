@@ -21,10 +21,13 @@
 
         public decimal Value { get; }
 
-        public IMetal Metal()
+        public IMetal ToMetal()
         {
             if (this == Quarter) return Metal.Quarter;
-            return new Metal();
+            if (this == Nickel) return Metal.Nickel;
+            if (this == Dime) return Metal.Dime;
+
+            return null;
         }
     }
 }

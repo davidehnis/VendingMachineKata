@@ -170,7 +170,7 @@ namespace Vending.Tests.Unit
             machine.Insert(metal, context, (r, c) => { }).Wait();
             machine.Insert(metal, context, (r, c) => { }).Wait();
             machine.Insert(metal, context, (r, c) => { }).Wait();
-            machine.Select("A", (r, s) => { }).Wait();
+            machine.Select(context, "A", (r, c) => { }).Wait();
 
             // Arrange
             Assert.IsTrue(context.ProductReturn.Items.Any());
@@ -184,16 +184,17 @@ namespace Vending.Tests.Unit
             IContext context = new DefaultContext();
             var machine = new Machine();
             var metal = Metal.Quarter;
-            IResult result = null;
+            var result = new Result();
 
             // Act
-            machine.Insert(metal, context, (r, c) => { }).Wait();
-            machine.Insert(metal, context, (r, c) => { }).Wait();
-            machine.Insert(metal, context, (r, c) => { }).Wait();
-            machine.Insert(metal, context, (r, c) => { }).Wait();
-            machine.Select("A", (r, s) => { }).Wait();
+            machine.Insert(metal, context, (r, c) => { result.Push(r); }).Wait();
+            machine.Insert(metal, context, (r, c) => { result.Push(r); }).Wait();
+            machine.Insert(metal, context, (r, c) => { result.Push(r); }).Wait();
+            machine.Insert(metal, context, (r, c) => { result.Push(r); }).Wait();
+            machine.Select(context, "A", (r, s) => { result.Push(r); }).Wait();
 
             // Arrange
+            Assert.IsTrue(result.Success());
             Assert.IsTrue(context.ProductReturn.Items.Any());
         }
 
@@ -205,18 +206,18 @@ namespace Vending.Tests.Unit
             var machine = new Machine();
             machine.Boot(context, (r, c) => { });
             var metal = Metal.Quarter;
-            IResult result = null;
+            var result = new Result();
 
             // Act
-            machine.Insert(metal, context, (r, c) => { }).Wait();
-            machine.Insert(metal, context, (r, c) => { }).Wait();
-            machine.Insert(metal, context, (r, c) => { }).Wait();
-            machine.Insert(metal, context, (r, c) => { }).Wait();
-            machine.Select("A", (r, s) => { }).Wait();
+            machine.Insert(metal, context, (r, c) => { result.Push(r); }).Wait();
+            machine.Insert(metal, context, (r, c) => { result.Push(r); }).Wait();
+            machine.Insert(metal, context, (r, c) => { result.Push(r); }).Wait();
+            machine.Insert(metal, context, (r, c) => { result.Push(r); }).Wait();
+            machine.Select(context, "A", (r, s) => { result.Push(r); }).Wait();
 
             // Arrange
-            Assert.IsTrue(context.Display.MessageStack.Contains("SOLD OUT"));
-            Assert.IsTrue(context.Display.MessageStack.Contains("$1.00"));
+            Assert.IsTrue(context.Display.MessageStack.Contains(Tags.Sold_Out));
+            Assert.IsTrue(context.Display.MessageStack.Contains("1.00"));
         }
 
         [TestMethod]
@@ -230,10 +231,10 @@ namespace Vending.Tests.Unit
             IResult result = null;
 
             // Act
-            machine.Select("A", (r, s) => { }).Wait();
+            machine.Select(context, "A", (r, s) => { }).Wait();
 
             // Arrange
-            Assert.IsTrue(context.Display.MessageStack.Contains("SOLD OUT"));
+            Assert.IsTrue(context.Display.MessageStack.Contains(Tags.Sold_Out));
             Assert.IsTrue(context.Display.MessageStack.Contains("INSERT COIN"));
         }
 
@@ -249,7 +250,7 @@ namespace Vending.Tests.Unit
             // Act
             machine.Insert(metal, context, (r, c) => { }).Wait();
             machine.Insert(metal, context, (r, c) => { }).Wait();
-            machine.Select("A", (r, s) => { }).Wait();
+            machine.Select(context, "A", (r, s) => { }).Wait();
 
             // Arrange
             Assert.IsTrue(context.Display.MessageStack.Contains("PRICE"));
@@ -283,22 +284,22 @@ namespace Vending.Tests.Unit
         public void SelectProduct_Inventory_Empty_Returns_Error()
         {
             // Arrange
-            IContext context = new DefaultContext();
+            IContext context = new NotEnoughProductInventoryContext();
             var machine = new Machine();
             var metal = Metal.Quarter;
-            IResult result = null;
+            var result = new Result();
 
             // Act
-            machine.Insert(metal, context, (r, c) => { }).Wait();
-            machine.Insert(metal, context, (r, c) => { }).Wait();
-            machine.Insert(metal, context, (r, c) => { }).Wait();
-            machine.Insert(metal, context, (r, c) => { }).Wait();
-            machine.Select("A", (r, s) => { }).Wait();
+            machine.Insert(metal, context, (r, c) => { result.Push(r); }).Wait();
+            machine.Insert(metal, context, (r, c) => { result.Push(r); }).Wait();
+            machine.Insert(metal, context, (r, c) => { result.Push(r); }).Wait();
+            machine.Insert(metal, context, (r, c) => { result.Push(r); }).Wait();
+            machine.Select(context, "A", (r, s) => { result.Push(r); }).Wait();
 
             // Arrange
-            Assert.IsFalse(context.ProductInventory.Items.Any());
-            Assert.IsTrue(context.Display.MessageStack.Contains("SOLD OUT"));
-            Assert.IsTrue(context.Display.MessageStack.Contains("$1.00"));
+            Assert.IsFalse(context.AvailableBins.Items.Any(i => i.Id == "A"));
+            Assert.IsTrue(context.Display.MessageStack.Contains(Tags.Sold_Out));
+            Assert.IsTrue(context.Display.MessageStack.Contains("1.00"));
         }
 
         [TestMethod]
@@ -308,17 +309,18 @@ namespace Vending.Tests.Unit
             IContext context = new DefaultContext();
             var machine = new Machine();
             var metal = Metal.Quarter;
-            IResult result = null;
+            var result = new Result();
 
             // Act
-            machine.Insert(metal, context, (r, c) => { }).Wait();
-            machine.Insert(metal, context, (r, c) => { }).Wait();
-            machine.Insert(metal, context, (r, c) => { }).Wait();
-            machine.Insert(metal, context, (r, c) => { }).Wait();
-            machine.Select("A", (r, s) => { }).Wait();
+            machine.Insert(metal, context, (r, c) => { result.Push(r); }).Wait();
+            machine.Insert(metal, context, (r, c) => { result.Push(r); }).Wait();
+            machine.Insert(metal, context, (r, c) => { result.Push(r); }).Wait();
+            machine.Insert(metal, context, (r, c) => { result.Push(r); }).Wait();
+            machine.Select(context, "A", (r, s) => { result.Push(r); }).Wait();
 
             // Arrange
-            Assert.IsTrue(context.ProductReturn.Items.Any());
+            Assert.IsTrue(result.Success());
+            Assert.AreEqual(1, context.ProductReturn.Items.Count());
             Assert.IsTrue(context.Display.MessageStack.Contains("THANK YOU"));
             Assert.IsTrue(context.ProductReturn.Items.Any());
         }
@@ -337,7 +339,7 @@ namespace Vending.Tests.Unit
             machine.Insert(metal, context, (r, c) => { }).Wait();
             machine.Insert(metal, context, (r, c) => { }).Wait();
             machine.Insert(metal, context, (r, c) => { }).Wait();
-            machine.Select("A", (r, s) => { }).Wait();
+            machine.Select(context, "A", (r, s) => { }).Wait();
 
             // Arrange
             Assert.IsTrue(context.ProductReturn.Items.Any());

@@ -25,8 +25,6 @@ namespace Vending
 
         public IDisplay Display { get; protected set; }
 
-        public IInventory<IProduct> ProductInventory => ProductInventoryList;
-
         public IInventory<IProduct> ProductReturn { get; } = new Inventory<IProduct>();
 
         public decimal TotalDeposit { get; protected set; }
@@ -40,8 +38,6 @@ namespace Vending
         protected Inventory<ICoin> CoinInventoryList { get; } = new Inventory<ICoin>();
 
         protected Inventory<ICoin> DepositedCoinList { get; } = new Inventory<ICoin>();
-
-        protected Inventory<IProduct> ProductInventoryList { get; } = new Inventory<IProduct>();
 
         protected List<IStatus> TraceList { get; } = new List<IStatus>();
 
@@ -94,7 +90,8 @@ namespace Vending
 
                 var cost = product.Cost;
                 var total = new decimal(0.00);
-                foreach (var coin in DepositedCoins.Items)
+                var depositedCoins = DepositedCoins.Items.ToList();
+                foreach (var coin in depositedCoins)
                 {
                     var remaining = cost - total;
                     if (remaining <= 0) break;
@@ -105,11 +102,12 @@ namespace Vending
 
                 foreach (var coin in clearedCoins)
                 {
-                    CoinReturn.Deposit(coin);
+                    CoinReturn.Deposit(coin.ToMetal());
                 }
-
-                var result = new Result(Status.ThankYou, true);
-                callback?.Invoke(result, context);
+            }
+            else
+            {
+                Display.Push("INSERT COIN");
             }
         }
 

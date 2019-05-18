@@ -47,17 +47,18 @@ namespace Vending
                 var product = context.SelectProduct(bin);
                 if (product == null)
                 {
+                    context.Display.Push(Tags.Sold_Out);
                     var res = new Result(Status.SoldOut, false);
                     callback?.Invoke(res, context);
+
                     return;
                 }
 
                 var depositedCoinTotal = context.DepositedCoins.Items.Select(c => c.Value).Sum();
                 if (depositedCoinTotal >= product.Cost)
                 {
-                    context.ProductReturn.Deposit(product);
-                    context.Display.Push("THANK YOU");
-                    context.Display.Push("INSERT COIN");
+                    context.Display.Push(Tags.Thank_You);
+                    context.Display.Push(Tags.Insert_Coin);
                     context.Display.Push("$0.00");
                     context.Purchase(product);
                     var result = new Result(Status.ThankYou, true);

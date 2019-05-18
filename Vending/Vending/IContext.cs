@@ -19,8 +19,6 @@ namespace Vending
 
         IDisplay Display { get; }
 
-        IInventory<IProduct> ProductInventory { get; }
-
         IInventory<IProduct> ProductReturn { get; }
 
         decimal TotalDeposit { get; }

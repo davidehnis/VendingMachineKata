@@ -6,6 +6,6 @@
 
         decimal Value { get; }
 
-        IMetal Metal();
+        IMetal ToMetal();
     }
 }
