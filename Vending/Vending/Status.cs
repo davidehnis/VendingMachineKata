@@ -18,6 +18,8 @@
 
         public static IStatus ThankYou { get; } = new Status(StatusType.ThankYou);
 
+        public static IStatus Price { get; } = new Status(StatusType.Price);
+
         public string Message { get; }
 
         public StatusType Type { get; }

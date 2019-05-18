@@ -141,14 +141,14 @@ namespace Vending.Tests.Unit
             IContext context = new DefaultContext();
             var machine = new Machine();
             var metal = Metal.Quarter;
-            IResult result = null;
+            var result = new Result();
 
             // Act
-            machine.Insert(metal, context, (r, c) => { }).Wait();
-            machine.Insert(metal, context, (r, c) => { }).Wait();
-            machine.Insert(metal, context, (r, c) => { }).Wait();
-            machine.Insert(metal, context, (r, c) => { }).Wait();
-            machine.Return(context, (r, s) => { }).Wait();
+            machine.Insert(metal, context, (r, c) => { result.Push(r); }).Wait();
+            machine.Insert(metal, context, (r, c) => { result.Push(r); }).Wait();
+            machine.Insert(metal, context, (r, c) => { result.Push(r); }).Wait();
+            machine.Insert(metal, context, (r, c) => { result.Push(r); }).Wait();
+            machine.Return(context, (r, s) => { result.Push(r); }).Wait();
 
             // Arrange
             Assert.AreEqual(4, context.CoinReturn.Items.Count());
@@ -202,7 +202,7 @@ namespace Vending.Tests.Unit
         public void Select_Product_Empty_Inventory_Updates_Display()
         {
             // Arrange
-            IContext context = new NotEnoughCoinInventoryContext();
+            IContext context = new NotEnoughProductInventoryContext();
             var machine = new Machine();
             machine.Boot(context, (r, c) => { });
             var metal = Metal.Quarter;
@@ -228,21 +228,21 @@ namespace Vending.Tests.Unit
             var machine = new Machine();
             machine.Boot(context, (r, c) => { });
             var metal = Metal.Quarter;
-            IResult result = null;
+            var result = new Result();
 
             // Act
-            machine.Select(context, "A", (r, s) => { }).Wait();
+            machine.Select(context, "A", (r, s) => { result.Push(r); }).Wait();
 
             // Arrange
             Assert.IsTrue(context.Display.MessageStack.Contains(Tags.Sold_Out));
-            Assert.IsTrue(context.Display.MessageStack.Contains("INSERT COIN"));
+            Assert.IsTrue(context.Display.MessageStack.Contains(Tags.Insert_Coin));
         }
 
         [TestMethod]
         public void Select_Product_Incorrect_Amount_Updates_Display()
         {
             // Arrange
-            IContext context = new Context();
+            IContext context = new DefaultContext();
             var machine = new Machine();
             var metal = Metal.Quarter;
             IResult result = null;
@@ -253,7 +253,7 @@ namespace Vending.Tests.Unit
             machine.Select(context, "A", (r, s) => { }).Wait();
 
             // Arrange
-            Assert.IsTrue(context.Display.MessageStack.Contains("PRICE"));
+            Assert.IsTrue(context.Display.MessageStack.Contains(Tags.Price));
             Assert.IsTrue(context.Display.MessageStack.Contains("$1.00"));
         }
 
