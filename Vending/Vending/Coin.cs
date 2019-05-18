@@ -20,5 +20,14 @@
         public CoinType Type { get; }
 
         public decimal Value { get; }
+
+        public IMetal ToMetal()
+        {
+            if (this == Quarter) return Metal.Quarter;
+            if (this == Nickel) return Metal.Nickel;
+            if (this == Dime) return Metal.Dime;
+
+            return null;
+        }
     }
 }

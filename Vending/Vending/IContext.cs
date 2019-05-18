@@ -7,21 +7,19 @@ namespace Vending
     {
         IEnumerable<CoinType> AcceptedDenominations { get; }
 
-        IEnumerable<IBin> AvailableBins { get; }
+        IInventory<IBin> AvailableBins { get; }
 
-        IEnumerable<ICoin> CoinInventory { get; }
+        IInventory<ICoin> CoinInventory { get; }
 
-        IDispensory<ICoin> CoinReturn { get; }
+        IInventory<IMetal> CoinReturn { get; }
 
         ISelection CurrentSelection { get; }
 
-        IEnumerable<ICoin> DepositedCoins { get; }
+        IInventory<ICoin> DepositedCoins { get; }
 
         IDisplay Display { get; }
 
-        IEnumerable<IProduct> ProductInventory { get; }
-
-        IDispensory<IProduct> ProductReturn { get; }
+        IInventory<IProduct> ProductReturn { get; }
 
         decimal TotalDeposit { get; }
 
@@ -57,8 +55,16 @@ namespace Vending
         /// <param name="coin"></param>
         void Insert(ICoin coin);
 
+        void InvalidCoin(IMetal metal);
+
+        void Purchase(IProduct product);
+
+        IProduct SelectProduct(string bin);
+
         /// <summary>Changes the current selection</summary>
         /// <param name="selection"></param>
         void Update(ISelection selection);
+
+        void ValidCoin(ICoin coin);
     }
 }

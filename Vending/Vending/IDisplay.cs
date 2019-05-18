@@ -15,4 +15,26 @@ namespace Vending
 
         Task Push(string message);
     }
+
+    public class Display : IDisplay
+    {
+        public Display()
+        {
+        }
+
+        public string Current { get; protected set; } = string.Empty;
+
+        public IEnumerable<string> MessageStack => Messages;
+
+        protected Stack<string> Messages { get; } = new Stack<string>();
+
+        public Task Push(string message)
+        {
+            return Task.Factory.StartNew(() =>
+            {
+                Current = message;
+                Messages.Push(message);
+            });
+        }
+    }
 }

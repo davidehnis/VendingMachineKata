@@ -6,6 +6,6 @@ namespace Vending
     {
         string Id { get; }
 
-        IEnumerable<IProduct> Inventory { get; }
+        IInventory<IProduct> Inventory { get; }
     }
 }
