@@ -17,6 +17,8 @@
         public static ICoin Quarter { get; }
             = new Coin(CoinType.Quarter, new decimal(0.10));
 
+        public decimal Cost => Value;
+
         public CoinType Type { get; }
 
         public decimal Value { get; }

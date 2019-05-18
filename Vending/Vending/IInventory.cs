@@ -16,5 +16,9 @@ namespace Vending
         void Deposit(T item);
 
         void Deposit(IEnumerable<T> items);
+
+        void Remove(T item);
+
+        decimal TotalValue();
     }
 }

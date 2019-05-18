@@ -1,10 +1,8 @@
 ﻿namespace Vending
 {
-    public interface ICoin
+    public interface ICoin : IAsset
     {
         CoinType Type { get; }
-
-        decimal Value { get; }
 
         IMetal ToMetal();
     }

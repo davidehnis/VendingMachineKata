@@ -13,20 +13,20 @@ namespace Vending
         /// <param name="initial"> </param>
         /// <param name="callback"></param>
         /// <returns></returns>
-        Task Boot(IContext initial, Action<IResult, IContext> callback);
+        Task Boot(IContext initial, Action<IResult> callback);
 
         /// <summary>Insert metal</summary>
         /// <param name="coin">    </param>
         /// <param name="context"> </param>
         /// <param name="callback"></param>
         /// <returns></returns>
-        Task Insert(IMetal coin, IContext context, Action<IResult, IContext> callback);
+        Task Insert(IMetal coin, IContext context, Action<IResult> callback);
 
         /// <summary>Return coins</summary>
         /// <param name="context"> </param>
         /// <param name="callback"></param>
         /// <returns></returns>
-        Task Return(IContext context, Action<IResult, IContext> callback);
+        Task Return(IContext context, Action<IResult> callback);
 
         /// <summary>Make a product selection</summary>
         /// c
@@ -34,6 +34,6 @@ namespace Vending
         /// <param name="bin">     </param>
         /// <param name="callback"></param>
         /// <returns></returns>
-        Task Select(IContext context, string bin, Action<IResult, IContext> callback);
+        Task Select(IContext context, string bin, Action<IResult> callback);
     }
 }

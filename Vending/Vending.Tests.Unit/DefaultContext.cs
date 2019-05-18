@@ -11,8 +11,8 @@ namespace Vending.Tests.Unit
             AcceptedDenomitationList.Add(CoinType.Nickel);
             AcceptedDenomitationList.Add(CoinType.Dime);
 
-            AvailableBinList.Deposit(CreateDefaultBins());
-            CoinInventoryList.Deposit(CreateDefaultCoinInventory());
+            AvailableBins.Deposit(CreateDefaultBins());
+            CoinInventory.Deposit(CreateDefaultCoinInventory());
             TotalDeposit = 0;
             TraceList.Clear();
         }

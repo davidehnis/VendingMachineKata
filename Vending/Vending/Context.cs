@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
@@ -8,36 +9,31 @@ namespace Vending
     {
         public Context()
         {
-            Display = new Display();
+            DisplayMessage = new Display();
+            DisplayAmount = new Display();
         }
 
         public IEnumerable<CoinType> AcceptedDenominations => AcceptedDenomitationList;
 
-        public IInventory<IBin> AvailableBins => AvailableBinList;
+        public IInventory<IBin> AvailableBins { get; } = new AssetInventory<IBin>();
 
-        public IInventory<ICoin> CoinInventory => CoinInventoryList;
+        public IInventory<ICoin> CoinInventory { get; } = new AssetInventory<ICoin>();
 
-        public IInventory<IMetal> CoinReturn { get; } = new Inventory<IMetal>();
+        public IInventory<IMetal> CoinReturn { get; } = new AssetInventory<IMetal>();
 
-        public ISelection CurrentSelection { get; protected set; }
+        public IInventory<ICoin> DepositedCoins { get; } = new AssetInventory<ICoin>();
 
-        public IInventory<ICoin> DepositedCoins => DepositedCoinList;
+        public IDisplay DisplayAmount { get; }
 
-        public IDisplay Display { get; protected set; }
+        public IDisplay DisplayMessage { get; protected set; }
 
-        public IInventory<IProduct> ProductReturn { get; } = new Inventory<IProduct>();
+        public IInventory<IProduct> ProductReturn { get; } = new AssetInventory<IProduct>();
 
         public decimal TotalDeposit { get; protected set; }
 
         public IEnumerable<IStatus> Trace => TraceList;
 
         protected List<CoinType> AcceptedDenomitationList { get; } = new List<CoinType>();
-
-        protected Inventory<IBin> AvailableBinList { get; } = new Inventory<IBin>();
-
-        protected Inventory<ICoin> CoinInventoryList { get; } = new Inventory<ICoin>();
-
-        protected Inventory<ICoin> DepositedCoinList { get; } = new Inventory<ICoin>();
 
         protected List<IStatus> TraceList { get; } = new List<IStatus>();
 
@@ -48,7 +44,7 @@ namespace Vending
 
         public void Add(IBin bin)
         {
-            AvailableBinList.Deposit(bin);
+            AvailableBins.Deposit(bin);
         }
 
         public void Add(IStatus status)
@@ -58,77 +54,129 @@ namespace Vending
 
         public void EjectCoins()
         {
-            DepositedCoinList.Clear();
+            DepositedCoins.Clear();
         }
 
         public void Insert(ICoin coin)
         {
-            DepositedCoinList.Deposit(coin);
+            DepositedCoins.Deposit(coin);
         }
 
         public void InvalidCoin(IMetal metal)
         {
             CoinReturn.Deposit(metal);
-            Display.Push(TotalDeposit == 0
-                ? "INSERT COIN"
-                : TotalDeposit.ToString(CultureInfo.InvariantCulture));
+            StartState();
+        }
+
+        public void MadePurchaseState(IProduct product)
+        {
+            ProductReturn.Deposit(product);
+            DisplayMessage.Push("THANK YOU");
+            MakeChange(product.Cost);
+
+            StartState();
+        }
+
+        public void MakeChange(decimal productCost)
+        {
+            var coins = new List<ICoin>();
+
+            var cost = productCost;
+            var deposited = DepositedCoins.TotalValue();
+            var amountOwedToCustomer = deposited - cost;
+            var refundRemaining = amountOwedToCustomer;
+
+            if ((amountOwedToCustomer % new decimal(0.25)) < amountOwedToCustomer)
+            {
+                var numOfCoins = (int)(amountOwedToCustomer / new decimal(0.25));
+                for (var i = 0; i < numOfCoins; i++)
+                {
+                    coins.Add(Coin.Quarter);
+                }
+
+                refundRemaining = refundRemaining % new decimal(0.25);
+                amountOwedToCustomer = refundRemaining;
+            }
+
+            if ((amountOwedToCustomer % new decimal(0.10)) < amountOwedToCustomer)
+            {
+                var numOfCoins = (int)(amountOwedToCustomer / new decimal(0.10));
+                for (var i = 0; i <= numOfCoins; i++)
+                {
+                    coins.Add(Coin.Dime);
+                }
+
+                refundRemaining = refundRemaining % new decimal(0.10);
+                amountOwedToCustomer = refundRemaining;
+            }
+
+            if ((amountOwedToCustomer % new decimal(0.05)) < amountOwedToCustomer)
+            {
+                var numOfCoins = (int)(amountOwedToCustomer / new decimal(0.05));
+                for (var i = 0; i <= numOfCoins; i++)
+                {
+                    coins.Add(Coin.Nickel);
+                }
+
+                refundRemaining = refundRemaining % new decimal(0.05);
+                amountOwedToCustomer = refundRemaining;
+            }
+
+            foreach (var coin in coins)
+            {
+                CoinInventory.Remove(coin);
+                CoinReturn.Deposit(coin.ToMetal());
+            }
+        }
+
+        public void NotEnoughCoinsState(IProduct product)
+        {
+            DisplayMessage.Push(Tags.Price);
+            DisplayAmount.Push($"{product.Cost:C}");
+
+            StartState();
         }
 
         public void Purchase(IProduct product)
         {
             var depositedCoinTotal
-                = DepositedCoins.Items.Select(c => c.Value).Sum();
+                = DepositedCoins.Items.Select(c => c.Cost).Sum();
 
             if (depositedCoinTotal >= product.Cost)
             {
-                ProductReturn.Deposit(product);
-                Display.Push("THANK YOU");
-                Display.Push("INSERT COIN");
-                Display.Push("$0.00");
-
-                var clearedCoins = new List<ICoin>();
-
-                var cost = product.Cost;
-                var total = new decimal(0.00);
-                var depositedCoins = DepositedCoins.Items.ToList();
-                foreach (var coin in depositedCoins)
-                {
-                    var remaining = cost - total;
-                    if (remaining <= 0) break;
-                    total = total + coin.Value;
-                    var cn = DepositedCoins.Debit();
-                    clearedCoins.Add(cn);
-                }
-
-                foreach (var coin in clearedCoins)
-                {
-                    CoinReturn.Deposit(coin.ToMetal());
-                }
+                MadePurchaseState(product);
             }
             else
             {
-                Display.Push("INSERT COIN");
+                NotEnoughCoinsState(product);
             }
+
+            StartState();
         }
 
         public IProduct SelectProduct(string binId)
         {
-            var bin = AvailableBinList
+            var bin = AvailableBins
                 .Items.FirstOrDefault(b => b.Id == binId);
 
             return bin?.Inventory.Debit();
         }
 
-        public void Update(ISelection selection)
+        public void StartState()
         {
-            CurrentSelection = selection;
+            DisplayMessage.Push(
+                CoinInventory.TotalValue() < new decimal(0.50)
+                    ? Tags.ExactChange
+                    : Tags.InsertCoin);
+            DisplayAmount.Push($"{TotalDeposit:C}");
         }
 
         public void ValidCoin(ICoin coin)
         {
-            DepositedCoinList.Deposit(coin);
-            TotalDeposit += coin.Value;
-            Display.Push(TotalDeposit.ToString(CultureInfo.InvariantCulture));
+            DepositedCoins.Deposit(coin);
+            TotalDeposit += coin.Cost;
+
+            StartState();
         }
     }
 }
