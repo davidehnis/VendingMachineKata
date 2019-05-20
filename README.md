@@ -1,13 +1,14 @@
 # Virtual implementation of a vending machine
 
-The vending machine has the following features
-01 Insert Money
-02 Select Product
-03 Coin Return
-04 Make Change
+The vending machine has the following features:
+
+1. Insert Money
+2. Select Product
+3. Coin Return
+4. Make Change
 
 To run build the product, run msbuild.exe on the vending.sln file.
-To run all tests, run mstest.exe on the Vending.Tests.Unit dll file
+To run all tests, run mstest.exe on the Vending.Tests.Unit dll file.
 
 **Core Concepts**
 
