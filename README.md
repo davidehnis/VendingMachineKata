@@ -9,7 +9,7 @@ The vending machine has the following features
 To run build the product, run msbuild.exe on the vending.sln file.
 To run all tests, run mstest.exe on the Vending.Tests.Unit dll file
 
-Core Concepts
+**Core Concepts**
 
 Context:  Holds the current state of Machine
 Machine:  Mutates context according to the rules set forth in Vending.dll
@@ -18,8 +18,8 @@ Inventory:  A collection of assets to be tracked in the Context
 
 In Vending.Tests.Unit you will find multiple implementations of IContext to show how to setup the machine.
 
-Example code
-
+**Example code**
+```
 IContext context = new DefaultContext();
 var machine = new Machine();
 var metal = metal.Quarter;
@@ -29,4 +29,4 @@ machine.Insert(invalidMetal, context, (r) =>
 {
     result.Push(r);
 }).Wait();
-
+```
