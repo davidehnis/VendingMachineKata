@@ -7,6 +7,9 @@ The vending machine has the following features:
 3. Coin Return
 4. Make Change
 
+## Building and Testing
+To build and test from the command line, these instructions assume that the user has Visual Studio 2017 installed on the build and test machine(s).
+
 To **build** the solution, run msbuild.exe on the vending.sln file.
 
 For Example
@@ -19,7 +22,7 @@ For Example:
 
 > "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe" [repos directory]\VendingMachineKata\Vending\Vending.Tests.Unit\bin\Debug\Vending.Tests.Unit.dll
 
-**Core Concepts**
+## Core Concepts
 
 Context:  Holds the current state of Machine
 Machine:  Mutates context according to the rules set forth in Vending.dll
