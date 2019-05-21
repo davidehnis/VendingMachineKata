@@ -7,13 +7,17 @@ The vending machine has the following features:
 3. Coin Return
 4. Make Change
 
-To run build the product, run msbuild.exe on the vending.sln file.
+To **build** the solution, run msbuild.exe on the vending.sln file.
 
-To run all tests, run vstest.console.exe on the Vending.Tests.Unit dll file.
+For Example
+
+> "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\MSBuild\15.0\Bin\msbuild.exe" [repos location]\VendingMachineKata\Vending\Vending.sln
+
+To run **unit tests**, run vstest.console.exe on the Vending.Tests.Unit dll file.
 
 For Example:
 
-"C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe" [repos directory]\VendingMachineKata\Vending\Vending.Tests.Unit\bin\Debug\Vending.Tests.Unit.dll
+> "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe" [repos directory]\VendingMachineKata\Vending\Vending.Tests.Unit\bin\Debug\Vending.Tests.Unit.dll
 
 **Core Concepts**
 
