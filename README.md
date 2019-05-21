@@ -8,7 +8,12 @@ The vending machine has the following features:
 4. Make Change
 
 To run build the product, run msbuild.exe on the vending.sln file.
-To run all tests, run mstest.exe on the Vending.Tests.Unit dll file.
+
+To run all tests, run vstest.console.exe on the Vending.Tests.Unit dll file.
+
+For Example:
+
+"C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe" [repos directory]\VendingMachineKata\Vending\Vending.Tests.Unit\bin\Debug\Vending.Tests.Unit.dll
 
 **Core Concepts**
 
